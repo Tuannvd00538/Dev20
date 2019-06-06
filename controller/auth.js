@@ -38,7 +38,7 @@ exports.getMe = function (req, res) {
             });
             return;
         };
-        res.status(204).json({
+        res.status(200).json({
             code: 204,
             message: "No data!"
         });
