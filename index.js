@@ -35,7 +35,6 @@ app.use(express.static(__dirname + '/public'));
 
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
-server.listen(8080);
 
 var realtime = require('./controller/realtime');
 
@@ -50,3 +49,5 @@ io.on("connection", function (socket) {
         }
     });
 });
+
+server.listen(8080);
