@@ -4,7 +4,7 @@ require('mongoose-pagination');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
-exports.getMe = function(req, res) {
+exports.getMe = function (req, res) {
     Account.aggregate([
         { $project: { fullname: 1, avatar: 1 } },
         {
@@ -25,28 +25,35 @@ exports.getMe = function(req, res) {
         }
     ], (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(400).json({
+                code: 400,
+                message: "Oops, something went wrong!"
+            });
             return;
         };
         if (result.length != 0) {
-            res.send(result);
+            res.status(200).json({
+                code: 200,
+                result: result
+            });
             return;
         };
-        res.send({
-            "message": "Không có dữ liệu!"
+        res.status(204).json({
+            code: 204,
+            message: "No data!"
         });
     });
 }
 
-exports.add = function(req, res) {
+exports.add = function (req, res) {
     var obj = new Account(req.body);
     var salt = Math.random().toString(36).substring(7);
     obj.salt = salt;
     obj.password = sha512(obj.password, obj.salt);
     obj.username = obj.username.toLowerCase();
-    Account.findOne({ username: obj.username }, function(err, result) {
+    Account.findOne({ username: obj.username }, function (err, result) {
         if (result == null) {
-            obj.save(function(err) {
+            obj.save(function (err) {
                 if (err) {
                     res.status(400).json({
                         code: 400,
@@ -75,10 +82,10 @@ exports.add = function(req, res) {
 
 }
 
-exports.login = function(req, res) {
+exports.login = function (req, res) {
     var username = req.body.username.toLowerCase();;
     var password = req.body.password;
-    Account.findOne({ username: username, 'status': 1 }, function(err, result) {
+    Account.findOne({ username: username, 'status': 1 }, function (err, result) {
         if (err) {
             res.status(400).json({
                 code: 400,
@@ -109,7 +116,7 @@ exports.login = function(req, res) {
     });
 }
 
-var sha512 = function(password, salt) {
+var sha512 = function (password, salt) {
     var hash = crypto.createHmac('sha512', salt);
     hash.update(password);
     return hash.digest('hex');
