@@ -12,28 +12,44 @@ $(document).ready(() => {
     //     postWarning(id, temperature);
     //     console.log(temperature);
     // }, 2000);
-    
+
+
+    var socket = io("/");
+
+    socket.on("PushTempratureToClient", function (data) {
+        console.log(data);
+        
+    });
+
+    $("#send").click(function () {
+        socket.emit("PushTempratureToServer", {
+            ownerId: id,
+            temprature: 32,
+            isModeAnalytics: true
+        });
+    });
+
     getWarningToday(id);
     // getMe(id);
     // getWarningYear(id, year);
     // getWarningMonth(id, month, year);
-    
+
     if (token == null) {
         if (!window.location.pathname.includes("login") && !window.location.pathname.includes("register")) {
             window.location.href = "/login";
         };
     }
-    
+
 });
 
 function getMe(id) {
     $.ajax({
-        url: '/_api/v1/account/'+id,
+        url: '/_api/v1/account/' + id,
         type: "GET",
-        success: function(response) {
+        success: function (response) {
             console.log(response);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             console.log("error");
         }
     });
@@ -41,18 +57,18 @@ function getMe(id) {
 
 function postWarning(id, temperature) {
     var data = {
-        "ownerId" : id,
-        "temperature" : temperature,
-        "isWarning" : true
+        "ownerId": id,
+        "temperature": temperature,
+        "isWarning": true
     };
     $.ajax({
         url: '/_api/v1/warning',
         type: "POST",
         data: data,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             console.log("error");
         }
     });
@@ -61,13 +77,13 @@ function postWarning(id, temperature) {
 function getWarningToday(id) {
     var data = [];
     $.ajax({
-        url: '/_api/v1/warning/'+id+'/today',
+        url: '/_api/v1/warning/' + id,
         type: "GET",
         data: data,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             console.log("error");
         }
     });
@@ -76,13 +92,13 @@ function getWarningToday(id) {
 function getWarningYear(id, year) {
     var data = [];
     $.ajax({
-        url: '/_api/v1/warning/'+id+'/'+year,
+        url: '/_api/v1/warning/' + id + '/' + year,
         type: "GET",
         data: data,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             console.log("error");
         }
     });
@@ -91,13 +107,13 @@ function getWarningYear(id, year) {
 function getWarningMonth(id, month, year) {
     var data = [];
     $.ajax({
-        url: '/_api/v1/warning/'+id+'/'+month+'/'+year,
+        url: '/_api/v1/warning/' + id + '/' + month + '/' + year,
         type: "GET",
         data: data,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             console.log("error");
         }
     });

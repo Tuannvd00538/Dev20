@@ -33,11 +33,11 @@
     <!-- Main CSS-->
     <link href="css/theme.css" rel="stylesheet" media="all">
     <style>
-            #chart {
-                width: 100%;
-                margin: 35px auto;
-            }
-        </style>
+        #chart {
+            width: 100%;
+            margin: 35px auto;
+        }
+    </style>
 
 </head>
 
@@ -86,6 +86,9 @@
                             <a href="/">
                                 <i class="fas fa-chart-bar"></i>Home</a>
                         </li>
+                        <li>
+                            <button id="send">Send</button>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -100,7 +103,8 @@
                     <div class="container-fluid">
                         <div class="header-wrap">
                             <form class="form-header" action="" method="POST">
-                                <input class="au-input au-input--xl" type="text" name="search" placeholder="Search for datas &amp; reports..." />
+                                <input class="au-input au-input--xl" type="text" name="search"
+                                    placeholder="Search for datas &amp; reports..." />
                                 <button class="au-btn--submit" type="submit">
                                     <i class="zmdi zmdi-search"></i>
                                 </button>
@@ -118,7 +122,8 @@
                                             <div class="info clearfix">
                                                 <div class="image">
                                                     <a href="javascript:void(0)">
-                                                        <img class="authAvt" src="images/icon/avatar-01.jpg" alt="John Doe" />
+                                                        <img class="authAvt" src="images/icon/avatar-01.jpg"
+                                                            alt="John Doe" />
                                                     </a>
                                                 </div>
                                                 <div class="content">
@@ -282,122 +287,124 @@
     <script src="js/main.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/index.js"></script>
-     
-        <script>
 
-var lastDate = 0;
-var data = []
-var TICKINTERVAL = 86400000
-let XAXISRANGE = 777600000
-function getDayWiseTimeSeries(baseval, count, yrange) {
-    var i = 0;
-    while (i < count) {
-        var x = baseval;
-        var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 
-        data.push({
-            x, y
-        });
-        lastDate = baseval
-        baseval += TICKINTERVAL;
-        i++;
-    }
-}
+    <script>
 
-getDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 10, {
-    min: 10,
-    max: 90
-})
+        var lastDate = 0;
+        var data = []
+        var TICKINTERVAL = 86400000
+        let XAXISRANGE = 777600000
+        function getDayWiseTimeSeries(baseval, count, yrange) {
+            var i = 0;
+            while (i < count) {
+                var x = baseval;
+                var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
-function getNewSeries(baseval, yrange) {
-    var newDate = baseval + TICKINTERVAL;
-    lastDate = newDate
-
-    for(var i = 0; i< data.length - 10; i++) {
-        // IMPORTANT
-        // we reset the x and y of the data which is out of drawing area
-        // to prevent memory leaks
-        data[i].x = newDate - XAXISRANGE - TICKINTERVAL
-        data[i].y = 0
-    }
-    
-    data.push({
-        x: newDate,
-        y: Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
-    })
-   
-}
-
-function resetData(){
-    // Alternatively, you can also reset the data at certain intervals to prevent creating a huge series 
-    data = data.slice(data.length - 10, data.length);
-}
-
-var options = {
-    chart: {
-        height: 350,
-        type: 'line',
-        animations: {
-            enabled: true,
-            easing: 'linear',
-            dynamicAnimation: {
-                speed: 1000
+                data.push({
+                    x, y
+                });
+                lastDate = baseval
+                baseval += TICKINTERVAL;
+                i++;
             }
-        },
-        toolbar: {
-            show: false
-        },
-        zoom: {
-            enabled: false
         }
-    },
-    dataLabels: {
-        enabled: false
-    },
-    stroke: {
-        curve: 'smooth'
-    },
-    series: [{
-        data: data
-    }],
-    title: {
-        text: 'Dynamic Updating Chart',
-        align: 'left'
-    },
-    markers: {
-        size: 0
-    },
-    xaxis: {
-        type: 'datetime',
-        range: XAXISRANGE,
-    },
-    yaxis: {
-        max: 100
-    },
-    legend: {
-        show: false
-    },
-}
 
-var chart = new ApexCharts(
-    document.querySelector("#chart"),
-    options
-);
+        getDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 10, {
+            min: 10,
+            max: 90
+        })
 
-chart.render();
+        function getNewSeries(baseval, yrange) {
+            var newDate = baseval + TICKINTERVAL;
+            lastDate = newDate
 
-window.setInterval(function () {
-    getNewSeries(lastDate, {
-        min: 10,
-        max: 90
-    })
-    chart.updateSeries([{
-        data: data
-    }])
-}, 1000)
+            for (var i = 0; i < data.length - 10; i++) {
+                // IMPORTANT
+                // we reset the x and y of the data which is out of drawing area
+                // to prevent memory leaks
+                data[i].x = newDate - XAXISRANGE - TICKINTERVAL
+                data[i].y = 0
+            }
+
+            data.push({
+                x: newDate,
+                y: Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min
+            })
+
+        }
+
+        function resetData() {
+            // Alternatively, you can also reset the data at certain intervals to prevent creating a huge series 
+            data = data.slice(data.length - 10, data.length);
+        }
+
+        var options = {
+            chart: {
+                height: 350,
+                type: 'line',
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    dynamicAnimation: {
+                        speed: 1000
+                    }
+                },
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            series: [{
+                data: data
+            }],
+            title: {
+                text: 'Dynamic Updating Chart',
+                align: 'left'
+            },
+            markers: {
+                size: 0
+            },
+            xaxis: {
+                type: 'datetime',
+                range: XAXISRANGE,
+            },
+            yaxis: {
+                max: 100
+            },
+            legend: {
+                show: false
+            },
+        }
+
+        var chart = new ApexCharts(
+            document.querySelector("#chart"),
+            options
+        );
+
+        chart.render();
+
+        window.setInterval(function () {
+            getNewSeries(lastDate, {
+                min: 10,
+                max: 90
+            })
+            chart.updateSeries([{
+                data: data
+            }])
+        }, 1000)
 
 
-</script>
+    </script>
 </body>
 
 </html>

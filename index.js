@@ -20,16 +20,33 @@ warning(app);
 
 app.set('view engine', 'html');
 
-app.get('/login', function(req, res) {
+app.get('/login', function (req, res) {
     res.sendFile('./public/login.html', { root: __dirname })
 });
 
-app.get('/register', function(req, res) {
+app.get('/register', function (req, res) {
     res.sendFile('./public/register.html', { root: __dirname })
 });
 
+var server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
+
 app.use(express.static(__dirname + '/public'));
 
-app.listen(process.env.PORT || 8080, function() {
-    console.log('Server start success!');
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
+server.listen(8080);
+
+var realtime = require('./controller/realtime');
+
+io.on("connection", function (socket) {
+    socket.on("disconnect", function () {
+    });
+    
+    socket.on("PushTempratureToServer", function (data) {
+        socket.emit("PushTempratureToClient", data);
+        if (data.isModeAnalytics) {
+            realtime.logData(data);
+        }
+    });
 });
