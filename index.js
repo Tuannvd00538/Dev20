@@ -20,6 +20,23 @@ warning(app);
 
 app.set('view engine', 'html');
 
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
+
+var realtime = require('./controller/realtime');
+
+io.on("connection", function (socket) {
+    socket.on("disconnect", function () {
+    });
+
+    socket.on("PushTempratureToServer", function (data) {
+        socket.emit("PushTempratureToClient", data);
+        if (data.isModeAnalytics) {
+            realtime.logData(data);
+        }
+    });
+});
+
 app.get('/login', function (req, res) {
     res.sendFile('./public/login.html', { root: __dirname })
 });
@@ -29,22 +46,5 @@ app.get('/register', function (req, res) {
 });
 
 app.use(express.static(__dirname + '/public'));
-
-var server = require("http").Server(app);
-var io = require("socket.io")(server);
-
-var realtime = require('./controller/realtime');
-
-io.on("connection", function (socket) {
-    socket.on("disconnect", function () {
-    });
-    
-    socket.on("PushTempratureToServer", function (data) {
-        socket.emit("PushTempratureToClient", data);
-        if (data.isModeAnalytics) {
-            realtime.logData(data);
-        }
-    });
-});
 
 server.listen(8080);
