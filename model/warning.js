@@ -12,7 +12,7 @@ module.exports = mongoose.model('warnings', {
     },
     isWarning: {
         type: Boolean,
-        default: true
+        default: false
     },
 	createdAt: {
 		type: Date,

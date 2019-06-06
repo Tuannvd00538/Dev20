@@ -8,40 +8,22 @@ var jwt = require('jsonwebtoken');
 exports.getWarningByUser = async (req, res) => {
     const id = req.params.id;
     var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '');
     var yyyy = today.getFullYear();
+
     var dataResult = {
         code: 200,
-        today: {},
-        month: {},
-        year: {}
+        today: [],
+        month: [],
+        year: []
     }
-    await Warning.aggregate([
-        { $project: { createdAt: 1, month: { $month: '$createdAt' }, isWarning: 1, temperature: 1, ownerId: 1, year: { $year: '$createdAt' } } },
-        {
-            $match: {
-                month: parseInt(mm),
-                year: parseInt(yyyy),
-                ownerId: mongoose.Types.ObjectId(id),
-                isWarning: true
-            }
-        }
-    ], (err, result) => {
-        if (err) return;
-        if (result.length != 0) {
-            dataResult.month = result;
-            return;
-        };
-        dataResult.month = {
-            message: "No data!"
-        };
-    });
+
+    // query by year
     await Warning.aggregate([
         { $project: { createdAt: 1, temperature: 1, isWarning: 1, ownerId: 1, year: { $year: '$createdAt' } } },
         {
             $match: {
-                year: parseInt(yyyy),
+                year: yyyy,
                 ownerId: mongoose.Types.ObjectId(id),
                 isWarning: true
             }
@@ -52,11 +34,13 @@ exports.getWarningByUser = async (req, res) => {
             dataResult.year = result;
             return;
         };
-        dataResult.year = {
+        dataResult.year = [{
             message: "No data!"
-        };
+        }];
     });
     const todayGet = moment().startOf('day');
+
+    // query by date
     await Warning.aggregate([
         { $project: { createdAt: 1, isWarning: 1, temperature: 1, ownerId: 1 } },
         {
@@ -71,9 +55,36 @@ exports.getWarningByUser = async (req, res) => {
             dataResult.today = result;
             return;
         };
-        dataResult.today = {
+        dataResult.today = [{
             message: "No data!"
+        }];
+    });
+
+    // query by month
+    await Warning.aggregate([
+        { $project: { createdAt: 1, month: { $month: '$createdAt' }, isWarning: 1, temperature: 1, ownerId: 1, year: { $year: '$createdAt' } } },
+        {
+            $match: {
+                year: yyyy,
+                month: mm,
+                ownerId: mongoose.Types.ObjectId(id),
+                isWarning: true
+            }
+        }
+    ], (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        if (result.length != 0) {
+            dataResult.month = result;
+            console.log(result);
+            
+            return;
         };
+        dataResult.month = [{
+            message: "No data!"
+        }];
     });
     res.status(200).json(dataResult);
 }
