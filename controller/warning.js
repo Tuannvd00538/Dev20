@@ -5,18 +5,24 @@ var crypto = require('crypto');
 const moment = require('moment');
 var jwt = require('jsonwebtoken');
 
-exports.add = function (req, res) {
+exports.add = function(req, res) {
     var obj = new Warning(req.body);
-    obj.save(function (err) {
+    obj.save(function(err) {
         if (err) {
-            res.send(err);
+            res.status(400).json({
+                code: 400,
+                message: "Oops, something went wrong!"
+            });
             return;
         }
-        res.send(obj);
+        res.status(200).json({
+            code: 200,
+            result: obj
+        });
     });
 }
 
-exports.getByMonthAndYear = function (req, res) {
+exports.getByMonthAndYear = function(req, res) {
     const id = req.params.id;
     const qrMonth = req.params.month;
     const qrYear = req.params.year;
@@ -32,20 +38,27 @@ exports.getByMonthAndYear = function (req, res) {
         }
     ], (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(400).json({
+                code: 400,
+                message: "Oops, something went wrong!"
+            });
             return;
         };
         if (result.length != 0) {
-            res.send(result);
+            res.status(200).json({
+                code: 200,
+                result: result
+            });
             return;
         };
-        res.send({
-            "message": "Không có dữ liệu!"
+        res.status(204).json({
+            code: 204,
+            message: "No data!"
         });
     });
 }
 
-exports.getByYear = function (req, res) {
+exports.getByYear = function(req, res) {
     const id = req.params.id;
     const qrYear = req.params.year;
     Warning.aggregate([
@@ -59,20 +72,27 @@ exports.getByYear = function (req, res) {
         }
     ], (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(400).json({
+                code: 400,
+                message: "Oops, something went wrong!"
+            });
             return;
         };
         if (result.length != 0) {
-            res.send(result);
+            res.status(200).json({
+                code: 200,
+                result: result
+            });
             return;
         };
-        res.send({
-            "message": "Không có dữ liệu!"
+        res.status(204).json({
+            code: 204,
+            message: "No data!"
         });
     });
 }
 
-exports.getToday = function (req, res) {
+exports.getToday = function(req, res) {
     const id = req.params.id;
 
     const today = moment().startOf('day');
@@ -87,15 +107,22 @@ exports.getToday = function (req, res) {
         }
     ], (err, result) => {
         if (err) {
-            res.send(err);
+            res.status(400).json({
+                code: 400,
+                message: "Oops, something went wrong!"
+            });
             return;
         };
         if (result.length != 0) {
-            res.send(result);
+            res.status(200).json({
+                code: 200,
+                result: result
+            });
             return;
         };
-        res.send({
-            "message": "Không có dữ liệu!"
+        res.status(204).json({
+            code: 204,
+            message: "No data!"
         });
     });
 }
