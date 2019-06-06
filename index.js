@@ -28,9 +28,6 @@ app.get('/register', function (req, res) {
     res.sendFile('./public/register.html', { root: __dirname })
 });
 
-var server = require('http').createServer(app),
-    io = require('socket.io').listen(server);
-
 app.use(express.static(__dirname + '/public'));
 
 var server = require("http").Server(app);
