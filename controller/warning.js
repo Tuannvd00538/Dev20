@@ -79,7 +79,7 @@ exports.getWarningByUser = async (req, res) => {
         if (result.length != 0) {
             dataResult.month = result;
             console.log(result);
-            
+
             return;
         };
         dataResult.month = [{

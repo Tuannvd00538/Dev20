@@ -27,6 +27,7 @@ var realtime = require('./controller/realtime');
 
 io.on("connection", function (socket) {
     socket.on("disconnect", function () {
+        
     });
 
     socket.on("PushTempratureToServer", function (data) {

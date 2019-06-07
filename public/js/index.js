@@ -17,16 +17,7 @@ $(document).ready(() => {
     var socket = io("/");
 
     socket.on("PushTempratureToClient", function (data) {
-        console.log(data);
-        
-    });
-
-    $("#send").click(function () {
-        socket.emit("PushTempratureToServer", {
-            ownerId: id,
-            temprature: 32,
-            isModeAnalytics: true
-        });
+        console.log(data); 
     });
 
     getWarningToday(id);
