@@ -17,7 +17,7 @@ $(document).ready(() => {
     var socket = io("/");
 
     socket.on("PushTempratureToClient", function (data) {
-        console.log(data); 
+        console.log("SocketIO", data); 
     });
 
     getWarningToday(id);
