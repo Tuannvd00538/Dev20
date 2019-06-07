@@ -30,11 +30,11 @@ io.on("connection", function (socket) {
         
     });
 
-    socket.on("PushTempratureToServer", function (data) {
-        console.log("Data:", data);
-        io.emit("PushTempratureToClient", data);
-        if (data.isModeAnalytics) {
-            realtime.logData(data);
+    socket.on("PushTempratureToServer", function (ownerId, temperature, isMode) {
+        console.log(`OwnerID: ${ownerId} - Temprature: ${temperature} - isMode: ${isMode}`);
+        io.emit("PushTempratureToClient", ownerId);
+        if (isMode) {
+            // realtime.logownerId(data);
         }
     });
 });
