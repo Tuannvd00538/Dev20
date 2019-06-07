@@ -16,8 +16,8 @@ $(document).ready(() => {
 
     var socket = io("https://devhaichuc.herokuapp.com");
 
-    socket.on("PushTempratureToClient", function (data) {
-        console.log("SocketIO", data); 
+    socket.on("PushTempratureToClient", function (temperature) {
+        console.log(`Nhiệt độ: ${temperature}`); 
     });
 
     getWarningToday(id);
