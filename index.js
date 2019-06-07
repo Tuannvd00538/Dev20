@@ -32,7 +32,7 @@ io.on("connection", function (socket) {
 
     socket.on("PushTempratureToServer", function (data) {
         console.log("Data:", data);
-        io.socket.emit("PushTempratureToClient", data);
+        io.emit("PushTempratureToClient", data);
         if (data.isModeAnalytics) {
             realtime.logData(data);
         }
