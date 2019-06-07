@@ -14,7 +14,7 @@ $(document).ready(() => {
     // }, 2000);
 
 
-    var socket = io("/");
+    var socket = io("https://devhaichuc.herokuapp.com");
 
     socket.on("PushTempratureToClient", function (data) {
         console.log("SocketIO", data); 
