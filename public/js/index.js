@@ -14,16 +14,18 @@ $(document).ready(() => {
     // }, 2000);
 
 
-    var socket = io("https://devhaichuc.herokuapp.com");
+    // var socket = io("https://devhaichuc.herokuapp.com");
 
-    socket.on("PushTempratureToClient", function (temperature) {
-        console.log(`Nhiệt độ: ${temperature}`); 
-    });
+    // socket.on("PushTempratureToClient", function (temperature) {
+    //     console.log(`Nhiệt độ: ${temperature}`); 
+    // });
 
     getWarningToday(id);
-    // getMe(id);
+    getMe(id);
     // getWarningYear(id, year);
     // getWarningMonth(id, month, year);
+    warningToday();
+    chartRealtime();
 
     if (token == null) {
         if (!window.location.pathname.includes("login") && !window.location.pathname.includes("register")) {
@@ -108,4 +110,232 @@ function getWarningMonth(id, month, year) {
             console.log("error");
         }
     });
+}
+
+function warningToday() {
+    try {
+        //Sales chart
+        var ctx = document.getElementById("sales-chart");
+        if (ctx) {
+          ctx.height = 150;
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: ["2010", "2011", "2012", "2013", "2014", "2015", "2016"],
+              type: 'line',
+              defaultFontFamily: 'Poppins',
+              datasets: [{
+                label: "Foods",
+                data: [0, 30, 10, 120, 50, 63, 10],
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(220,53,69,0.75)',
+                borderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: 'rgba(220,53,69,0.75)',
+              }, {
+                label: "Electronics",
+                data: [0, 50, 40, 80, 40, 79, 120],
+                backgroundColor: 'transparent',
+                borderColor: 'rgba(40,167,69,0.75)',
+                borderWidth: 3,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: 'rgba(40,167,69,0.75)',
+              }]
+            },
+            options: {
+              responsive: true,
+              tooltips: {
+                mode: 'index',
+                titleFontSize: 12,
+                titleFontColor: '#000',
+                bodyFontColor: '#000',
+                backgroundColor: '#fff',
+                titleFontFamily: 'Poppins',
+                bodyFontFamily: 'Poppins',
+                cornerRadius: 3,
+                intersect: false,
+              },
+              legend: {
+                display: false,
+                labels: {
+                  usePointStyle: true,
+                  fontFamily: 'Poppins',
+                },
+              },
+              scales: {
+                xAxes: [{
+                  display: true,
+                  gridLines: {
+                    display: false,
+                    drawBorder: false
+                  },
+                  scaleLabel: {
+                    display: false,
+                    labelString: 'Month'
+                  },
+                  ticks: {
+                    fontFamily: "Poppins"
+                  }
+                }],
+                yAxes: [{
+                  display: true,
+                  gridLines: {
+                    display: false,
+                    drawBorder: false
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Value',
+                    fontFamily: "Poppins"
+    
+                  },
+                  ticks: {
+                    fontFamily: "Poppins"
+                  }
+                }]
+              },
+              title: {
+                display: false,
+                text: 'Normal Legend'
+              }
+            }
+          });
+        }
+    
+    
+      } catch (error) {
+        console.log(error);
+      }
+}
+
+function chartRealtime() {
+    var lastDate = 0;
+        var data = [];
+        var TICKINTERVAL = 1000;
+        let XAXISRANGE = 1000*60;
+        var RANGESLIDE = 70;
+        var maxy = 40;
+        var miny = 30;
+
+        var socket = io("https://devhaichuc.herokuapp.com");
+        var temperatureCurent = miny;
+            
+        socket.on("PushTempratureToClient", function (temperature) {
+            console.log(temperature); 
+            temperatureCurent = temperature
+        });
+        
+        function getDayWiseTimeSeries(baseval, count, yrange) {
+            var i = 0;
+            while (i < count) {
+                var x = baseval;
+                var y = miny;
+
+                data.push({
+                    x, y
+                });
+                lastDate = baseval
+                baseval += TICKINTERVAL;
+                i++;
+            }
+        }
+        
+        console.log(Date.now());
+        getDayWiseTimeSeries(Date.now(), RANGESLIDE, {
+            min: 10,
+            max: 90
+        })
+
+        function getNewSeries(baseval, yrange) {
+            var newDate = baseval + TICKINTERVAL;
+            lastDate = newDate
+
+            for (var i = 0; i < data.length - RANGESLIDE; i++) {
+                data[i].x = newDate - XAXISRANGE - TICKINTERVAL;
+                data[i].y = miny;
+            }
+            
+            data.push({
+                x: newDate,
+                y: temperatureCurent
+            })
+
+        }
+
+        function resetData() {
+            data = data.slice(data.length - RANGESLIDE, data.length);
+        }
+
+        var options = {
+            chart: {
+                height: 350,
+                type: 'line',
+                animations: {
+                    enabled: true,
+                    easing: 'linear',
+                    dynamicAnimation: {
+                        speed: 1000
+                    }
+                },
+                toolbar: {
+                    show: false
+                },
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            series: [{
+                data: data
+            }],
+            title: {
+                show: false
+            },
+            markers: {
+                size: 0
+            },
+            xaxis: {
+                type: 'datetime',
+                range: XAXISRANGE,
+                labels: {
+                    formatter: function (value, XAXISRANGE) {
+                        let dateCurrent = new Date(XAXISRANGE);
+                        return dateCurrent.getHours()+":"+dateCurrent.getMinutes()+":"+dateCurrent.getSeconds();
+                    }, 
+                  }
+            },
+            yaxis: {
+                max: maxy,
+                min: miny
+            },
+            legend: {
+                show: false
+            },
+        }
+
+        var chart = new ApexCharts(
+            document.querySelector("#chart"),
+            options
+        );
+
+        chart.render();
+
+        window.setInterval(function () {
+            getNewSeries(lastDate, {
+                min: 10,
+                max: 90
+            })
+            chart.updateSeries([{
+                data: data
+            }])
+        }, 1000)
 }
