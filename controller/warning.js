@@ -110,7 +110,7 @@ exports.getToday = function (req, res) {
     const today = moment().startOf('day');
 
     Realtime.aggregate([
-        { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, updatedAt: 1, isModeAnalytics: 1, temperature: 1, ownerId: 1 } },
+        { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, updatedAt: 1, isModeAnalytics: 1, temprature: 1, ownerId: 1 } },
         {
             $match: {
                 updatedAt: { $gte: today.toDate(), $lt: moment(today).endOf('day').toDate() },

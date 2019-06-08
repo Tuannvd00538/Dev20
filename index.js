@@ -36,7 +36,7 @@ io.on("connection", function (socket) {
         if (isMode) {
             realtime.logData({
                 ownerId: ownerId,
-                temperature: temperature,
+                temprature: temperature,
                 isModeAnalytics: isMode
             });
         }
