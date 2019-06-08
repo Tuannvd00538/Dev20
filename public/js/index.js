@@ -20,12 +20,13 @@ $(document).ready(() => {
     //     console.log(`Nhiệt độ: ${temperature}`); 
     // });
 
-    getWarningToday(id);
-    getMe(id);
+    // getWarningToday(id);
+    // getMe(id);
     // getWarningYear(id, year);
     // getWarningMonth(id, month, year);
-    warningToday();
+    // warningToday();
     chartRealtime();
+    getWarningRealtimeToday(id)
 
     if (token == null) {
         if (!window.location.pathname.includes("login") && !window.location.pathname.includes("register")) {
@@ -68,6 +69,7 @@ function postWarning(id, temperature) {
 }
 
 function getWarningToday(id) {
+    
     var data = [];
     $.ajax({
         url: '/_api/v1/warning/' + id,
@@ -82,14 +84,35 @@ function getWarningToday(id) {
     });
 }
 
-function getWarningYear(id, year) {
+function getWarningRealtimeToday(id) {
+    
     var data = [];
     $.ajax({
-        url: '/_api/v1/warning/' + id + '/' + year,
+        url: '/_api/v1/realtime/' + id + '/today',
         type: "GET",
         data: data,
         success: function (response) {
             console.log(response);
+            var data = response.result; 
+            var time = new Array();
+            var temperatureToday = new Array();
+            for(let i = 0; i < data.length; i++) {
+                let timeTodayCurrent = new Date(data[i].createdAt);
+                var timeCurrentFormat = '';
+                if(i == 0){
+                    timeCurrentFormat = timeTodayCurrent.getHours()+":"+timeTodayCurrent.getMinutes()+":"+timeTodayCurrent.getSeconds();
+                }
+                else {
+                    timeCurrentFormat = timeTodayCurrent.getMinutes()+":"+timeTodayCurrent.getSeconds();
+                }
+                
+                time.push(timeCurrentFormat);
+                temperatureToday.push(parseFloat(data[i].temprature));
+            }
+            console.log(time);
+            console.log(temperatureToday);
+            chartLineWarningToday(time, temperatureToday);
+            chartAreaWarningToday(time, temperatureToday);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("error");
@@ -97,22 +120,7 @@ function getWarningYear(id, year) {
     });
 }
 
-function getWarningMonth(id, month, year) {
-    var data = [];
-    $.ajax({
-        url: '/_api/v1/warning/' + id + '/' + month + '/' + year,
-        type: "GET",
-        data: data,
-        success: function (response) {
-            console.log(response);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.log("error");
-        }
-    });
-}
-
-function warningToday() {
+function chartLineWarningToday(time, data) {
     try {
         //Sales chart
         var ctx = document.getElementById("sales-chart");
@@ -121,12 +129,12 @@ function warningToday() {
           var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-              labels: ["2010", "2011", "2012", "2013", "2014", "2015", "2016"],
+              labels: time,
               type: 'line',
               defaultFontFamily: 'Poppins',
               datasets: [{
-                label: "Foods",
-                data: [0, 30, 10, 120, 50, 63, 10],
+                label: "Temperature",
+                data: data,
                 backgroundColor: 'transparent',
                 borderColor: 'rgba(220,53,69,0.75)',
                 borderWidth: 3,
@@ -134,16 +142,6 @@ function warningToday() {
                 pointRadius: 5,
                 pointBorderColor: 'transparent',
                 pointBackgroundColor: 'rgba(220,53,69,0.75)',
-              }, {
-                label: "Electronics",
-                data: [0, 50, 40, 80, 40, 79, 120],
-                backgroundColor: 'transparent',
-                borderColor: 'rgba(40,167,69,0.75)',
-                borderWidth: 3,
-                pointStyle: 'circle',
-                pointRadius: 5,
-                pointBorderColor: 'transparent',
-                pointBackgroundColor: 'rgba(40,167,69,0.75)',
               }]
             },
             options: {
@@ -212,6 +210,98 @@ function warningToday() {
       }
 }
 
+function chartAreaWarningToday(time, data) {
+    try {
+
+        //Team chart
+        var ctx = document.getElementById("team-chart");
+        if (ctx) {
+          ctx.height = 150;
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: time,
+              type: 'line',
+              defaultFontFamily: 'Poppins',
+              datasets: [{
+                data: data,
+                label: "Expense",
+                backgroundColor: 'rgba(0,103,255,.15)',
+                borderColor: 'rgba(0,103,255,0.5)',
+                borderWidth: 3.5,
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointBorderColor: 'transparent',
+                pointBackgroundColor: 'rgba(0,103,255,0.5)',
+              },]
+            },
+            options: {
+              responsive: true,
+              tooltips: {
+                mode: 'index',
+                titleFontSize: 12,
+                titleFontColor: '#000',
+                bodyFontColor: '#000',
+                backgroundColor: '#fff',
+                titleFontFamily: 'Poppins',
+                bodyFontFamily: 'Poppins',
+                cornerRadius: 3,
+                intersect: false,
+              },
+              legend: {
+                display: false,
+                position: 'top',
+                labels: {
+                  usePointStyle: true,
+                  fontFamily: 'Poppins',
+                },
+    
+    
+              },
+              scales: {
+                xAxes: [{
+                  display: true,
+                  gridLines: {
+                    display: false,
+                    drawBorder: false
+                  },
+                  scaleLabel: {
+                    display: false,
+                    labelString: 'Month'
+                  },
+                  ticks: {
+                    fontFamily: "Poppins"
+                  }
+                }],
+                yAxes: [{
+                  display: true,
+                  gridLines: {
+                    display: false,
+                    drawBorder: false
+                  },
+                  scaleLabel: {
+                    display: true,
+                    labelString: 'Value',
+                    fontFamily: "Poppins"
+                  },
+                  ticks: {
+                    fontFamily: "Poppins"
+                  }
+                }]
+              },
+              title: {
+                display: false,
+              }
+            }
+          });
+        }
+    
+    
+      } catch (error) {
+        console.log(error);
+      }
+}
+
 function chartRealtime() {
     var lastDate = 0;
         var data = [];
@@ -225,7 +315,7 @@ function chartRealtime() {
         var temperatureCurent = miny;
             
         socket.on("PushTempratureToClient", function (temperature) {
-            console.log(temperature); 
+            // console.log(temperature); 
             temperatureCurent = temperature
         });
         
@@ -253,6 +343,15 @@ function chartRealtime() {
         function getNewSeries(baseval, yrange) {
             var newDate = baseval + TICKINTERVAL;
             lastDate = newDate
+
+            if (temperatureCurent < miny) {
+                temperatureCurent = miny;
+            }
+
+            if (temperatureCurent > maxy) {
+                temperatureCurent = maxy;
+            }
+
 
             for (var i = 0; i < data.length - RANGESLIDE; i++) {
                 data[i].x = newDate - XAXISRANGE - TICKINTERVAL;
