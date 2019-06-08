@@ -1,10 +1,8 @@
 $(document).ready(() => {
-
     var token = localStorage.getItem('token');
     var fullname = localStorage.getItem('fullname');
     var avatar = localStorage.getItem('avatar');
     var id = localStorage.getItem('id');
-    console.log(id);
     var year = 2019;
     var month = 06;
     // setInterval(function() {
@@ -96,11 +94,14 @@ function getWarningRealtimeToday(id) {
             var data = response.result; 
             var time = new Array();
             var temperatureToday = new Array();
+            var hour;
+            var minute;
             for(let i = 0; i < data.length; i++) {
                 let timeTodayCurrent = new Date(data[i].createdAt);
                 var timeCurrentFormat = '';
-                if(i == 0){
-                    timeCurrentFormat = timeTodayCurrent.getHours()+":"+timeTodayCurrent.getMinutes()+":"+timeTodayCurrent.getSeconds();
+                if(hour != timeTodayCurrent.getHours()){
+                    hour = timeTodayCurrent.getHours();
+                    timeCurrentFormat = hour+":"+timeTodayCurrent.getMinutes()+":"+timeTodayCurrent.getSeconds();
                 }
                 else {
                     timeCurrentFormat = timeTodayCurrent.getMinutes()+":"+timeTodayCurrent.getSeconds();
@@ -109,8 +110,6 @@ function getWarningRealtimeToday(id) {
                 time.push(timeCurrentFormat);
                 temperatureToday.push(parseFloat(data[i].temprature));
             }
-            console.log(time);
-            console.log(temperatureToday);
             chartLineWarningToday(time, temperatureToday);
             chartAreaWarningToday(time, temperatureToday);
         },
@@ -306,17 +305,22 @@ function chartRealtime() {
     var lastDate = 0;
         var data = [];
         var TICKINTERVAL = 1000;
-        let XAXISRANGE = 1000*60;
+        let XAXISRANGE = TICKINTERVAL*60;
         var RANGESLIDE = 70;
         var maxy = 40;
         var miny = 30;
-
+        var socketOn = false;
         var socket = io("https://devhaichuc.herokuapp.com");
         var temperatureCurent = miny;
+        var downPerTime = 0.2;
+        var timeDownChartDefault = 3;
+        var timeDownChart = 0;
             
         socket.on("PushTempratureToClient", function (temperature) {
-            // console.log(temperature); 
-            temperatureCurent = temperature
+            socketOn = true;
+            timeDownChart = timeDownChartDefault;
+            temperatureCurent = temperature;
+            console.log(temperature);
         });
         
         function getDayWiseTimeSeries(baseval, count, yrange) {
@@ -334,15 +338,22 @@ function chartRealtime() {
             }
         }
         
-        console.log(Date.now());
-        getDayWiseTimeSeries(Date.now(), RANGESLIDE, {
+        getDayWiseTimeSeries(Date.now() - 1000 * RANGESLIDE, RANGESLIDE, {
             min: 10,
             max: 90
         })
 
         function getNewSeries(baseval, yrange) {
             var newDate = baseval + TICKINTERVAL;
-            lastDate = newDate
+            lastDate = newDate;
+
+            if(!socketOn) {
+                timeDownChart--;
+            }
+
+            if(timeDownChart <=0) {
+                temperatureCurent -= downPerTime;
+            }
 
             if (temperatureCurent < miny) {
                 temperatureCurent = miny;
@@ -351,7 +362,6 @@ function chartRealtime() {
             if (temperatureCurent > maxy) {
                 temperatureCurent = maxy;
             }
-
 
             for (var i = 0; i < data.length - RANGESLIDE; i++) {
                 data[i].x = newDate - XAXISRANGE - TICKINTERVAL;
@@ -362,6 +372,7 @@ function chartRealtime() {
                 x: newDate,
                 y: temperatureCurent
             })
+            socketOn = false
 
         }
 
@@ -414,7 +425,12 @@ function chartRealtime() {
             },
             yaxis: {
                 max: maxy,
-                min: miny
+                min: miny,
+                labels: {
+                    formatter: function (value) {
+                      return value.toPrecision(3);
+                    }
+                }
             },
             legend: {
                 show: false
@@ -436,5 +452,5 @@ function chartRealtime() {
             chart.updateSeries([{
                 data: data
             }])
-        }, 1000)
+        }, TICKINTERVAL)
 }
