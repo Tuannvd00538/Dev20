@@ -1,4 +1,5 @@
 var Warning = require('../model/warning');
+var Realtime = require('../model/realtime_temprature');
 var mongoose = require('mongoose');
 require('mongoose-pagination');
 var crypto = require('crypto');
@@ -104,87 +105,17 @@ exports.add = function (req, res) {
     });
 }
 
-exports.getByMonthAndYear = function (req, res) {
-    const id = req.params.id;
-    const qrMonth = req.params.month;
-    const qrYear = req.params.year;
-    Warning.aggregate([
-        { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, month: { $month: '$createdAt' }, isWarning: 1, temperature: 1, ownerId: 1, year: { $year: '$createdAt' } } },
-        {
-            $match: {
-                month: parseInt(qrMonth),
-                year: parseInt(qrYear),
-                ownerId: mongoose.Types.ObjectId(id),
-                isWarning: true
-            }
-        }
-    ], (err, result) => {
-        if (err) {
-            res.status(400).json({
-                code: 400,
-                message: "Oops, something went wrong!"
-            });
-            return;
-        };
-        if (result.length != 0) {
-            res.status(200).json({
-                code: 200,
-                result: result
-            });
-            return;
-        };
-        res.status(200).json({
-            code: 204,
-            message: "No data!"
-        });
-    });
-}
-
-exports.getByYear = function (req, res) {
-    const id = req.params.id;
-    const qrYear = req.params.year;
-    Warning.aggregate([
-        { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, temperature: 1, isWarning: 1, ownerId: 1, year: { $year: '$createdAt' } } },
-        {
-            $match: {
-                year: parseInt(qrYear),
-                ownerId: mongoose.Types.ObjectId(id),
-                isWarning: true
-            }
-        }
-    ], (err, result) => {
-        if (err) {
-            res.status(400).json({
-                code: 400,
-                message: "Oops, something went wrong!"
-            });
-            return;
-        };
-        if (result.length != 0) {
-            res.status(200).json({
-                code: 200,
-                result: result
-            });
-            return;
-        };
-        res.status(200).json({
-            code: 204,
-            message: "No data!"
-        });
-    });
-}
-
 exports.getToday = function (req, res) {
     const id = req.params.id;
-
     const today = moment().startOf('day');
 
-    Warning.aggregate([
-        { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, isWarning: 1, temperature: 1, ownerId: 1 } },
+    Realtime.aggregate([
+        { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, updatedAt: 1, isModeAnalytics: 1, temperature: 1, ownerId: 1 } },
         {
             $match: {
-                createdAt: { $gte: today.toDate(), $lt: moment(today).endOf('day').toDate() },
-                ownerId: mongoose.Types.ObjectId(id)
+                updatedAt: { $gte: today.toDate(), $lt: moment(today).endOf('day').toDate() },
+                ownerId: mongoose.Types.ObjectId(id),
+                isModeAnalytics: true
             }
         }
     ], (err, result) => {
@@ -206,5 +137,5 @@ exports.getToday = function (req, res) {
             code: 204,
             message: "No data!"
         });
-    });
+    }).exec();
 }
