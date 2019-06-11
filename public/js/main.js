@@ -3,6 +3,41 @@
   // USE STRICT
   "use strict";
 
+  var url = $(location).attr('href');
+  var path = url.split( '?' );
+  var segments = path[0].split( '/' );
+  console.log(segments);
+
+  switch(segments[3]) {
+    case '':
+      $('.site-bar-index').attr('class', 'active');
+      console.log('index');
+      break;
+    case 'patient.html':
+      $('.site-bar-patient').attr('class', 'active');
+      break;
+    case 'group.html':
+      $('.site-bar-group').attr('class', 'active');
+      break;
+    
+  }
+
+  var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+  };  
+
+  
   try {
     //WidgetChart 1
     var ctx = document.getElementById("widgetChart1");
