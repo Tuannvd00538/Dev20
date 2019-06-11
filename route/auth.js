@@ -1,4 +1,5 @@
 var auth = require('../controller/auth');
+var group = require('../controller/group');
 
 module.exports = function(app){
 
@@ -12,4 +13,16 @@ module.exports = function(app){
 
     app.route(`${API_V1}/account/:id`)
         .get(auth.getMe);
+
+    app.route(`${API_V1}/group/:ownerId`)
+        .get(group.getAll);
+
+    app.route(`${API_V1}/group/detail/:groupId`)
+        .get(group.getDetail);
+
+    app.route(`${API_V1}/group/create`)
+        .post(group.create);
+
+    app.route(`${API_V1}/group/addtogroup`)
+        .post(group.createUG);
 }
