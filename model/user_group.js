@@ -11,6 +11,10 @@ module.exports = mongoose.model('user_groups', {
         ref: "accounts",
         require: true
     },
+    patientName: {
+        type: String,
+        require: true
+    },
     createdAt: {
         type: Date,
         default: Date.now
