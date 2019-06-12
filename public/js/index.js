@@ -5,24 +5,7 @@ $(document).ready(() => {
     var id = localStorage.getItem('id');
     var year = 2019;
     var month = 06;
-    // setInterval(function() {
-    //     var temperature = Math.floor((Math.random() * 5) + 36);
-    //     postWarning(id, temperature);
-    //     console.log(temperature);
-    // }, 2000);
 
-
-    // var socket = io("https://devhaichuc.herokuapp.com");
-
-    // socket.on("PushTempratureToClient", function (temperature) {
-    //     console.log(`Nhiệt độ: ${temperature}`); 
-    // });
-
-    // getWarningToday(id);
-    // getMe(id);
-    // getWarningYear(id, year);
-    // getWarningMonth(id, month, year);
-    // warningToday();
     chartRealtime();
     getWarningRealtimeToday(id)
 
@@ -91,7 +74,12 @@ function getWarningRealtimeToday(id) {
         data: data,
         success: function (response) {
             console.log(response);
-            var data = response.result; 
+            if(response.result != null) {
+              var data = response.result;
+            } else {
+              var data = [];
+            }
+             
             var time = new Array();
             var temperatureToday = new Array();
             var hour;
