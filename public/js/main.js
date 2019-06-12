@@ -6,7 +6,6 @@
   var url = $(location).attr('href');
   var path = url.split( '?' );
   var segments = path[0].split( '/' );
-  console.log(segments);
 
   switch(segments[3]) {
     case '':
@@ -36,6 +35,7 @@
         }
     }
   };  
+  
 
   
   try {

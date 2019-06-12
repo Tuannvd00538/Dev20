@@ -1,13 +1,31 @@
 var ownerid = localStorage.getItem('id');
 listGroup(ownerid);
+
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};    
+
 var id_group = getUrlParameter('id');
 console.log(id_group);
-$('#btn-group').click(() => {
+if (id_group != null) {}
+
+$('.btn-create-group').click(() => {
     var name = $('#name').val();
     
     var dataPost = {
         "name": name,
-        "owrnerId": ownerid
+        "ownerId": ownerid
     }
     console.log(dataPost);
     if (name.length > 0) {
@@ -16,6 +34,7 @@ $('#btn-group').click(() => {
             type: "POST",
             data: dataPost,
             success: function(response) {
+                console.log(response.result);
                 window.location.href = "group.html?action=success";
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -31,18 +50,16 @@ function listGroup(ownerid) {
         type: "GET",
         success: function(response) {
             var result = response.result;
-            console.log(result);
-            if(result != 0){
-                var contentTable = '<tr>';
+            if(result != null){
+                var contentTable = '';
                 for(var i = 0; i < result.length; i++) {
+                    contentTable += '<tr>';
                     contentTable += '<td>'+result[i].name+'</td>';
-                    contentTable += '<td><a href="group.html?id='+result[i]._id+'">Edit</a></td>';
+                    contentTable += '<td><a href="group.html?id='+result[i]._id+'">Edit</a><a href="groupdetail.html?id='+result[i]._id+'">Detail</a></td>';
+                    contentTable += '</tr>';
                 }
-                contentTable += '</tr>';
-                console.log(contentTable);
                 $('.table-group').html(contentTable);
             }
-            $()
         },
         error: function(jqXHR, textStatus, errorThrown) {
             window.location.href = "index.html?action=error";
