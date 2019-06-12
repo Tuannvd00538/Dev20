@@ -27,4 +27,7 @@ module.exports = function(app){
 
     app.route(`${API_V1}/group/addtogroup`)
         .post(group.createUG);
+
+    app.route(`${API_V1}/group/remove/:groupId/:userId`)
+        .post(group.removeUG);
 }
