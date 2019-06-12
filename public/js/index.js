@@ -7,7 +7,8 @@ $(document).ready(() => {
     var month = 06;
 
     chartRealtime();
-    getWarningRealtimeToday(id)
+    getWarningRealtimeToday(id);
+    getWarningToday(id);
 
     if (token == null) {
         if (!window.location.pathname.includes("login") && !window.location.pathname.includes("register")) {
