@@ -45,7 +45,8 @@ exports.getAll = function (req, res) {
         { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, ownerId: 1, name: 1 } },
         {
             $match: {
-                ownerId: mongoose.Types.ObjectId(id)
+                ownerId: mongoose.Types.ObjectId(id),
+                status: 1
             }
         }
     ], (err, result) => {
@@ -84,7 +85,8 @@ exports.getDetail = function (req, res) {
         },
         {
             $match: {
-                _id: mongoose.Types.ObjectId(id)
+                _id: mongoose.Types.ObjectId(id),
+                status: 1
             }
         }
     ], (err, result) => {
@@ -130,4 +132,34 @@ exports.editGroup = (req, res) => {
             message: "No data!"
         });
 	});
+}
+
+exports.deleteGroup = (req, res) => {
+    let data = {
+        status: 0
+    }
+    UserGroup.updateMany({ groupId: req.params.groupId, status: 1 }, { status: 0 }, (err, result) => {
+        if (err) console.log(err);
+        console.log(result);
+    });
+    Group.findOneAndUpdate({_id: req.params.groupId, status: 1}, data, function(err, result) {
+        if (err) {
+            res.status(400).json({
+                code: 400,
+                message: "Oops, something went wrong!"
+            });
+            return;
+        };
+        if (result.length != 0) {
+            res.status(200).json({
+                code: 200,
+                message: "Delete success!"
+            });
+            return;
+        };
+        res.status(200).json({
+            code: 204,
+            message: "No data!"
+        });
+    }).exec();
 }
