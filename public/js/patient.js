@@ -7,6 +7,7 @@ $('#button-create').click(() => {
     var username = $('#username').val();
     var password = $('#password').val();
     var fullname = $('#fullname').val();
+    var groupId = $('#select-group').val();
     if (username.length == 0) {
         
     } else if (password.length == 0) {
@@ -19,22 +20,45 @@ $('#button-create').click(() => {
         "password": password,
         "fullname": fullname
     }
-    console.log(register);
-    if (username.length > 0 && password.length > 0 && fullname.length > 0) {
+    console.log(groupId);
+    if (username.length > 0 && password.length > 0 && fullname.length > 0 && groupId != null) {
         $.ajax({
             url: '/_api/v1/account/register',
             type: "POST",
             data: register,
             success: function(response) {
-                window.location.href = "patient.html?action=success";
+                console.log(response.result);
+                addtogroup(groupId, response.result.id);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 window.location.href = "patient.html?action=error";
             }
         });
     }
+    else {
+        window.location.href = "patient.html?action=error";
+    }
 });
 
+function addtogroup(groupId, patientId) {
+    var data = {
+        "groupId": groupId,
+        "patientId": patientId
+    }
+    console.log(data);
+    $.ajax({
+        url: '/_api/v1/group/addtogroup',
+        type: "POST",
+        data: data,
+        success: function(response) {
+            console.log(response);
+            window.location.href = "patient.html?action=success";
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            window.location.href = "patient.html?action=error";
+        }
+    });
+}
 
 function listGroup(ownerid) {
     $.ajax({
@@ -46,7 +70,7 @@ function listGroup(ownerid) {
             if(result != null){
                 var contentTable = '';
                 for(var i = 0; i < result.length; i++) {
-                    contentTable += '<optoin value="'+result[i]._id+'">'+result[i].name+'</option>';
+                    contentTable += '<option value="'+result[i]._id+'">'+result[i].name+'</option>';
                 }
                 console.log(contentTable);
                 $('#select-group').html(contentTable);
