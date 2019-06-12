@@ -84,6 +84,7 @@ exports.getDetail = function (req, res) {
                 as: "list"
             }
         },
+        { $addFields: { list: { $filter: { input: "$list", as: "c", cond: { $ne: ["$$c.status", 0] } } } } },
         {
             $match: {
                 _id: mongoose.Types.ObjectId(id),
