@@ -18,7 +18,8 @@ module.exports = function(app){
         .get(group.getAll);
 
     app.route(`${API_V1}/group/detail/:groupId`)
-        .get(group.getDetail);
+        .get(group.getDetail)
+        .put(group.editGroup);
 
     app.route(`${API_V1}/group/create`)
         .post(group.create);
