@@ -10,7 +10,6 @@
   switch(segments[3]) {
     case '':
       $('.site-bar-index').attr('class', 'active');
-      console.log('index');
       break;
     case 'patient.html':
       $('.site-bar-patient').attr('class', 'active');
@@ -18,7 +17,13 @@
     case 'group.html':
       $('.site-bar-group').attr('class', 'active');
       break;
-    
+    case 'groupdetail.html':
+      $('.site-bar-group').attr('class', 'active');
+      break;
+    case 'dashboard.html':
+      $('.site-bar-index').attr('class', 'active');
+      break;
+      
   }
 
   var getUrlParameter = function getUrlParameter(sParam) {

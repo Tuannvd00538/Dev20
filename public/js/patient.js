@@ -28,7 +28,7 @@ $('#button-create').click(() => {
             data: register,
             success: function(response) {
                 console.log(response.result);
-                addtogroup(groupId, response.result.id);
+                addtogroup(groupId, response.result.id, fullname);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 window.location.href = "patient.html?action=error";
@@ -40,10 +40,11 @@ $('#button-create').click(() => {
     }
 });
 
-function addtogroup(groupId, patientId) {
+function addtogroup(groupId, patientId, patientName) {
     var data = {
         "groupId": groupId,
-        "patientId": patientId
+        "patientId": patientId,
+        "patientName": patientName
     }
     console.log(data);
     $.ajax({
