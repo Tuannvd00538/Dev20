@@ -160,6 +160,19 @@ strong {
     color: #fff;
 }
 
+.ws-nowrap {
+    white-space: nowrap;
+}
+
+.patient-detail {
+    font-size: 24px;
+    color: #fff;
+}
+
+.temperature{
+    font-size: 36px;
+}
+
 /*-----------------------------------------------------*/
 /*                   ELEMENTS                          */
 /*-----------------------------------------------------*/
