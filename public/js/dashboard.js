@@ -12,9 +12,13 @@ function listGroup(ownerid) {
                 var contentTable = '';
                 for(var i = 0; i < result.length; i++) {
                     contentTable += '<div class="col-md-4 col-sm-6 col-xs-12">';
-                    contentTable += '<a href="index.html?id='+result[i]._id+'" class="btn btn-lg btn-outline-primary btn-block d-block mb-3 overflow-hidden">';
-                    contentTable += '<span id="payment-button-amount">'+result[i].name+'</span>';
-                    contentTable += '</a></div>';
+                    contentTable += '<a href="index.html?id='+result[i]._id+'" class="card bg-danger d-block mb-3 overflow-hidden">';
+                    contentTable += '<div class="card-body">';
+                    contentTable += '<blockquote class="blockquote mb-0">';
+                    contentTable += '<p class="text-light ws-nowrap">'+result[i].name+'</p>';
+                    contentTable += '</blockquote>';
+                    contentTable += '</div>';
+                    contentTable += '</div>';
                 }
                 $('.list_group').html(contentTable);
             }
