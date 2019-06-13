@@ -101,7 +101,7 @@ function listGroup(ownerid) {
                     contentTable += '<tr>';
                     contentTable += '<td>'+result[i].name+'</td>';
                     contentTable += '<td class="d-flex">';
-                    contentTable += '<a href="groupdetail.html?id='+result[i]._id+'" class="btn btn-sm btn-primary mr-2">Detail</a>';
+                    contentTable += '<a href="index.html?id='+result[i]._id+'" class="btn btn-sm btn-primary mr-2">Detail</a>';
                     contentTable += '<a href="group.html?id='+result[i]._id+'" class="btn btn-sm btn-warning mr-2">Edit</a>';
                     contentTable += '<button class="btn btn-sm btn-danger delete-group">Delete<span class="group-id d-none">'+result[i]._id+'</span></button>';
                     contentTable += '</td>';

@@ -53,7 +53,7 @@ function addtogroup(groupId, patientId, patientName) {
         data: data,
         success: function(response) {
             console.log(response);
-            window.location.href = "groupdetail.html?id="+groupId;
+            window.location.href = "index.html?id="+groupId;
         },
         error: function(jqXHR, textStatus, errorThrown) {
             window.location.href = "patient.html?action=error";
