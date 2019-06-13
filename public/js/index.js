@@ -337,13 +337,14 @@ function chartRealtime() {
         var maxy = 40;
         var miny = 30;
         var socketOn = false;
-        var socket = io(`https://devhaichuc.herokuapp.com/index.html?id=${id}`);
+        var socket = io(`https://devhaichuc.herokuapp.com/`);
         var temperatureCurent = miny;
         var downPerTime = 0.2;
         var timeDownChartDefault = 3;
         var timeDownChart = 0;
             
-        socket.on(`"${id}"`, function (temperature) {
+        socket.join(id);
+        socket.on("PushTempratureToClient", function (temperature) {
             socketOn = true;
             timeDownChart = timeDownChartDefault;
             temperatureCurent = temperature;

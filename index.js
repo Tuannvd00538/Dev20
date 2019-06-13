@@ -25,6 +25,11 @@ var io = require("socket.io")(server);
 
 var realtime = require('./controller/realtime');
 
+io.configure(function () {
+    io.set("transports", ["xhr-polling"]);
+    io.set("polling duration", 10);
+});
+
 io.on("connection", function (socket) {
 
     socket.on("disconnect", function () {
@@ -33,7 +38,7 @@ io.on("connection", function (socket) {
 
     socket.on("PushTempratureToServer", function (ownerId, temperature, isMode) {
         console.log(`OwnerID: ${ownerId} - Temprature: ${temperature} - isMode: ${isMode}`);
-        io.emit(`"${ownerId}"`, temperature);
+        io.to(ownerId).emit("PushTempratureToClient", temperature);
         if (isMode) {
             realtime.logData({
                 ownerId: ownerId,
