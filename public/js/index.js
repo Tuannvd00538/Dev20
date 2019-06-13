@@ -1,3 +1,25 @@
+var getUrlParameter = function getUrlParameter(sParam) {
+  var sPageURL = window.location.search.substring(1),
+      sURLVariables = sPageURL.split('&'),
+      sParameterName,
+      i;
+
+  for (i = 0; i < sURLVariables.length; i++) {
+      sParameterName = sURLVariables[i].split('=');
+
+      if (sParameterName[0] === sParam) {
+          return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+      }
+  }
+};    
+
+var userid = getUrlParameter('id');
+
+if (userid == null) {
+  window.location.href = "dashboard.html";
+}
+
+
 $(document).ready(() => {
     var token = localStorage.getItem('token');
     var fullname = localStorage.getItem('fullname');
@@ -7,8 +29,8 @@ $(document).ready(() => {
     var month = 06;
 
     chartRealtime();
-    getWarningRealtimeToday(id);
-    getWarningToday(id);
+    getWarningRealtimeToday(userid);
+    getWarningToday(userid);
 
     if (token == null) {
         if (!window.location.pathname.includes("login") && !window.location.pathname.includes("register")) {
@@ -58,7 +80,23 @@ function getWarningToday(id) {
         type: "GET",
         data: data,
         success: function (response) {
-            console.log(response);
+          if(response.year != null) {
+            var data = response.year;
+          } else {
+            var data = [];
+          }
+          var time = new Array();
+          var temperatureToday = new Array();
+          var timeDuplicate = "";
+          var minute;
+          for(let i = 0; i < data.length; i++) {
+              let timeTodayCurrent = new Date(data[i].createdAt);
+              var timeCurrentFormat = '';
+              timeCurrentFormat = timeTodayCurrent.getDay()+"/"+timeTodayCurrent.getMonth()+" "+timeTodayCurrent.getHours()+":"+timeTodayCurrent.getMinutes();
+              time.push(timeCurrentFormat); 
+              temperatureToday.push(parseFloat(data[i].temperature));
+          }
+          chartLineWarningToday(time, temperatureToday);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             console.log("error");
@@ -99,7 +137,6 @@ function getWarningRealtimeToday(id) {
                 time.push(timeCurrentFormat);
                 temperatureToday.push(parseFloat(data[i].temprature));
             }
-            chartLineWarningToday(time, temperatureToday);
             chartAreaWarningToday(time, temperatureToday);
         },
         error: function (jqXHR, textStatus, errorThrown) {
