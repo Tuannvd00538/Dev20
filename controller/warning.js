@@ -107,13 +107,16 @@ exports.add = function (req, res) {
 
 exports.getToday = function (req, res) {
     const id = req.params.id;
-    const today = moment().startOf('day');
+    const today = moment(req.params.time, 'X').startOf('day');
+    console.log(today);
+    console.log("Moment", moment());
+    
 
     Realtime.aggregate([
         { $project: { createdAt: { $subtract: [ "$createdAt", new Date("1970-01-01") ] }, updatedAt: 1, isModeAnalytics: 1, temprature: 1, ownerId: 1 } },
         {
             $match: {
-                updatedAt: { $gte: today.toDate(), $lt: moment(today).endOf('day').toDate() },
+                updatedAt: { $gte: today.toDate(), $lt: moment(req.params.time, 'X').endOf('day').toDate() },
                 ownerId: mongoose.Types.ObjectId(id),
                 isModeAnalytics: true
             }
@@ -137,5 +140,5 @@ exports.getToday = function (req, res) {
             code: 204,
             message: "No data!"
         });
-    }).exec();
+    });
 }
