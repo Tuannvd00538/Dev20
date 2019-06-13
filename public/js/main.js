@@ -33,7 +33,7 @@
     case 'group.html':
       $('.site-bar-group').attr('class', 'active');
       break;
-    case 'groupdetail.html':
+    case 'index.html':
       $('.site-bar-group').attr('class', 'active');
       break;
     case 'dashboard.html':
