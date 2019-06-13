@@ -27,7 +27,7 @@ $(document).ready(() => {
   var id = localStorage.getItem('id');
   var year = 2019;
   var month = 06;
-  
+
 
   chartRealtime();
   getWarningRealtimeToday(userid);
@@ -332,7 +332,7 @@ function send() {
   var id = localStorage.getItem('id');
   var socket = io.connect(`http://localhost:8080/`);
   console.log("send data");
-  
+
   socket.emit("PushTempratureToServer", "5d01237895e65e0eb424e8a6", 2, false);
 }
 
@@ -354,10 +354,12 @@ function chartRealtime() {
 
   socket.on("PushTempratureToClient", (temperature, ownerId) => {
     console.log(ownerId, temperature);
-    
-    socketOn = true;
-    timeDownChart = timeDownChartDefault;
-    temperatureCurent = temperature;
+
+    if (ownerId == id) {
+      socketOn = true;
+      timeDownChart = timeDownChartDefault;
+      temperatureCurent = temperature;
+    }
   });
 
   function getDayWiseTimeSeries(baseval, count, yrange) {
