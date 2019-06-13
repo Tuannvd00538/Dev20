@@ -31,9 +31,9 @@ io.on("connection", function (socket) {
         
     });
 
-    socket.on("PushTempratureToServer", function (ownerId, temperature, isMode) {
-        console.log(`OwnerID: ${ownerId} - Temprature: ${temperature} - isMode: ${isMode}`);
-        io.sockets.emit("PushTempratureToClient", temperature, ownerId);
+    socket.on("PushTempratureToServer", function (ownerId, temperature, isMode, isWarning) {
+        console.log(`OwnerID: ${ownerId} - Temprature: ${temperature} - isMode: ${isMode} - isWarning: ${isWarning}`);
+        io.sockets.emit("PushTempratureToClient", temperature, ownerId, isWarning);
         if (isMode) {
             realtime.logData({
                 ownerId: ownerId,

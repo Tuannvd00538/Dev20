@@ -328,14 +328,6 @@ function chartAreaWarningToday(time, data) {
   }
 }
 
-function send() {
-  var id = localStorage.getItem('id');
-  var socket = io.connect(`http://localhost:8080/`);
-  console.log("send data");
-
-  socket.emit("PushTempratureToServer", "5d01237895e65e0eb424e8a6", 2, false);
-}
-
 function chartRealtime() {
   var id = localStorage.getItem('id');
   var lastDate = 0;
@@ -352,9 +344,9 @@ function chartRealtime() {
   var timeDownChartDefault = 3;
   var timeDownChart = 0;
 
-  socket.on("PushTempratureToClient", (temperature, ownerId) => {
-    console.log(ownerId, temperature);
-
+  socket.on("PushTempratureToClient", (temperature, ownerId, isWarning) => {
+    console.log(isWarning, ownerId);
+    
     if (ownerId == id) {
       socketOn = true;
       timeDownChart = timeDownChartDefault;
