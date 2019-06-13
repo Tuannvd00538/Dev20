@@ -16,7 +16,7 @@
   }
 
   if(rolePatient.indexOf(segments[3]) == -1 && role == 0) {
-    window.location.href = 'index.html?id='+id;
+    window.location.href = 'index.html?userid='+id;
   }
   if(role == 0) {
     $('.site-bar-patient').attr('class', 'd-none');
