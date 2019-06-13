@@ -23,12 +23,15 @@ app.set('view engine', 'html');
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
 
+
+io.set('origins', '*:*');
+
 var realtime = require('./controller/realtime');
 
 io.on("connection", function (socket) {
-    
+
     socket.on("disconnect", function () {
-        
+
     });
 
     socket.on("PushTempratureToServer", function (ownerId, temperature, isMode, isWarning) {
