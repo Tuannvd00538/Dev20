@@ -50,7 +50,7 @@ $(document).ready(() => {
                     localStorage.setItem('id', response.result.id);
                     localStorage.setItem('token', response.result.token);
                     localStorage.setItem('avatar', response.result.avatar);
-                    window.location.href = "/";
+                    window.location.href = "dashboard.html";
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     Swal.fire({
