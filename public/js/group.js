@@ -70,6 +70,25 @@ $(document).on('click', '#btn-edit-group', () => {
     }
 });
 
+$(document).on('click', '.delete-group', function () {
+    var rowthis = $(this).parents("tr");
+    var groupid = $(this).find('span').text();
+    if(confirm("Are you sure you want to delete the group, the patients will also be deleted from the group")) {
+        $.ajax({
+            url: '/_api/v1/group/detail/'+groupid,
+            type: "DELETE",
+            success: function(response) {
+                console.log(response);
+                rowthis.attr('class', 'd-none');
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // window.location.href = "index.html?action=error";
+            }
+        });
+    }
+});
+
 function listGroup(ownerid) {
     $.ajax({
         url: '/_api/v1/group/'+ownerid,
@@ -81,7 +100,11 @@ function listGroup(ownerid) {
                 for(var i = 0; i < result.length; i++) {
                     contentTable += '<tr>';
                     contentTable += '<td>'+result[i].name+'</td>';
-                    contentTable += '<td><a href="group.html?id='+result[i]._id+'" class="btn btn-warning mr-2">Edit</a><a href="groupdetail.html?id='+result[i]._id+'" class="btn btn-primary">Detail</a></td>';
+                    contentTable += '<td class="d-flex">';
+                    contentTable += '<a href="groupdetail.html?id='+result[i]._id+'" class="btn btn-sm btn-primary mr-2">Detail</a>';
+                    contentTable += '<a href="group.html?id='+result[i]._id+'" class="btn btn-sm btn-warning mr-2">Edit</a>';
+                    contentTable += '<button class="btn btn-sm btn-danger delete-group">Delete<span class="group-id d-none">'+result[i]._id+'</span></button>';
+                    contentTable += '</td>';
                     contentTable += '</tr>';
                 }
                 $('.table-group').html(contentTable);
@@ -91,6 +114,31 @@ function listGroup(ownerid) {
             window.location.href = "index.html?action=error";
         }
     });
+}
+
+function deletegroup(groupId) {
+    if(confirm("Are you sure you want to delete the group, the patients will also be deleted from the group")) {
+        alert('ok');
+    }
+    // $.ajax({
+    //     url: '/_api/v1/group/detail/'+groupid,
+    //     type: "GET",
+    //     success: function(response) {
+    //         var result = response.result;
+    //         if(result != null){
+    //             var nameGroup = result[0].name;
+    //             $('#name').val(nameGroup);
+    //             $('.title-form-group').text('Edit Group');
+                
+    //             $('#btn-create-group i').attr('class', 'fa fa-save fa-lg');
+    //             $('#btn-create-group span').text('Edit');
+    //             $('#btn-create-group').attr('id', 'btn-edit-group');
+    //         }
+    //     },
+    //     error: function(jqXHR, textStatus, errorThrown) {
+    //         // window.location.href = "index.html?action=error";
+    //     }
+    // });
 }
 
 function getDetailGroup(groupid) {

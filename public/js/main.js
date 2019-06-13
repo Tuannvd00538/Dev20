@@ -7,6 +7,22 @@
   var path = url.split( '?' );
   var segments = path[0].split( '/' );
 
+  var id = localStorage.getItem('id');
+  var doctor = ['5d01237895e65e0eb424e8a6', '5cf8e656b409e818bc7220fe'];
+  var rolePatient = ['login', 'register', 'index.html']
+  var role = 0;
+  if(doctor.indexOf(id) != -1){
+    role = 1;
+  }
+
+  if(rolePatient.indexOf(segments[3]) == -1 && role == 0) {
+    window.location.href = 'index.html?id='+id;
+  }
+  if(role == 0) {
+    $('.site-bar-patient').attr('class', 'd-none');
+    $('.site-bar-group').attr('class', 'd-none');
+  }
+
   switch(segments[3]) {
     case '':
       $('.site-bar-index').attr('class', 'active');
