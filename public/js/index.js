@@ -345,6 +345,9 @@ function chartRealtime() {
   var timeDownChart = 0;
 
   socket.on("PushTempratureToClient", (temperature, ownerId, isWarning) => {
+
+    console.log(ownerId, isWarning);
+    
     
     if (ownerId == id) {
       socketOn = true;
