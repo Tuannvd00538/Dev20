@@ -25,11 +25,6 @@ var io = require("socket.io")(server);
 
 var realtime = require('./controller/realtime');
 
-io.configure(function () {
-    io.set("transports", ["xhr-polling"]);
-    io.set("polling duration", 10);
-});
-
 io.on("connection", function (socket) {
 
     socket.on("disconnect", function () {
