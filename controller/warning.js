@@ -35,9 +35,7 @@ exports.getWarningByUser = async (req, res) => {
             dataResult.year = result;
             return;
         };
-        dataResult.year = [{
-            message: "No data!"
-        }];
+        dataResult.year = [];
     }).exec();
     const todayGet = moment().startOf('day');
 
@@ -56,9 +54,7 @@ exports.getWarningByUser = async (req, res) => {
             dataResult.today = result;
             return;
         };
-        dataResult.today = [{
-            message: "No data!"
-        }];
+        dataResult.today = [];
     }).exec();
 
     // query by month
@@ -81,9 +77,7 @@ exports.getWarningByUser = async (req, res) => {
             dataResult.month = result;
             return;
         };
-        dataResult.month = [{
-            message: "No data!"
-        }];
+        dataResult.month = [];
     }).exec();
     res.status(200).json(dataResult);
 }
