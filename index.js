@@ -26,13 +26,20 @@ var io = require("socket.io")(server);
 var realtime = require('./controller/realtime');
 
 io.on("connection", function (socket) {
+
+    var idConnect = socket.handshake['query']['id'];
+
+    console.log(idConnect);
+
+    socket.join(idConnect);
+    
     socket.on("disconnect", function () {
-        
+        socket.leave(idConnect)
     });
 
     socket.on("PushTempratureToServer", function (ownerId, temperature, isMode) {
         console.log(`OwnerID: ${ownerId} - Temprature: ${temperature} - isMode: ${isMode}`);
-        io.emit("PushTempratureToClient", temperature);
+        io.to(idConnect).emit("PushTempratureToClient", temperature);
         if (isMode) {
             realtime.logData({
                 ownerId: ownerId,

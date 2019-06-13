@@ -12,4 +12,7 @@ module.exports = function(app){
 
     app.route(`${API_V1}/realtime/:id/:time`)
         .get(warning.getToday);
+
+    app.route(`${API_V1}/socket/connect/:id`)
+        .get(warning.connectSocket);
 }

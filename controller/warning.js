@@ -108,8 +108,6 @@ exports.add = function (req, res) {
 exports.getToday = function (req, res) {
     const id = req.params.id;
     const today = moment(req.params.time, 'X').startOf('day');
-    console.log(today);
-    console.log("Moment", moment());
     
 
     Realtime.aggregate([
@@ -141,4 +139,8 @@ exports.getToday = function (req, res) {
             message: "No data!"
         });
     });
+}
+
+exports.connectSocket = (req, res) => {
+    res.send("SayHi!");
 }

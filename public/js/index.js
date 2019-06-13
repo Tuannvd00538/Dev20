@@ -291,6 +291,7 @@ function chartAreaWarningToday(time, data) {
 }
 
 function chartRealtime() {
+  var id = localStorage.getItem('id');
     var lastDate = 0;
         var data = [];
         var TICKINTERVAL = 1000;
@@ -299,7 +300,7 @@ function chartRealtime() {
         var maxy = 40;
         var miny = 30;
         var socketOn = false;
-        var socket = io("https://devhaichuc.herokuapp.com");
+        var socket = io(`https://devhaichuc.herokuapp.com/?id=${id}`);
         var temperatureCurent = miny;
         var downPerTime = 0.2;
         var timeDownChartDefault = 3;
