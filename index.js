@@ -25,7 +25,7 @@ var io = require("socket.io")(server);
 
 var realtime = require('./controller/realtime');
 
-io.on("connection", function (socket) {
+io.of('/socket/connect').on("connection", function (socket) {
     
     socket.on("disconnect", function () {
         
