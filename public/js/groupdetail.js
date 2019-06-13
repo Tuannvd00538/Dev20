@@ -52,10 +52,10 @@ function detailGroup(groupid) {
                     var contentTable = '';
                     for(var i = 0; i < data.length; i++) {
                         contentTable += '<tr>';
-                        contentTable += '<td>'+data[i]._id+'</td>';
+                        contentTable += '<td>'+data[i].patientId+'</td>';
                         contentTable += '<td>'+data[i].patientName+'</td>';
-                        contentTable += '<td class="text-right"><a href="index.html?id='+data[i]._id+'" class="btn btn-primary mr-2">Detail</a>';
-                        contentTable += '<button class="btn btn-danger delete-owner">Delete<span class="group-id d-none">'+data[i]._id+'</span></button>';
+                        contentTable += '<td class="text-right"><a href="index.html?id='+data[i].patientId+'" class="btn btn-primary mr-2">Detail</a>';
+                        contentTable += '<button class="btn btn-danger delete-owner">Delete<span class="group-id d-none">'+data[i].patientId+'</span></button>';
                         contentTable += '</tr>';
                     }
                     $('.table-patient').html(contentTable);
