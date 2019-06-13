@@ -5,9 +5,9 @@ require('mongoose-pagination');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
-exports.create = function (req, res) {
+exports.create = function(req, res) {
     var obj = new Group(req.body);
-    obj.save(function (err) {
+    obj.save(function(err) {
         if (err) {
             res.status(400).json({
                 code: 400,
@@ -22,9 +22,9 @@ exports.create = function (req, res) {
     });
 }
 
-exports.createUG = function (req, res) {
+exports.createUG = function(req, res) {
     var obj = new UserGroup(req.body);
-    obj.save(function (err) {
+    obj.save(function(err) {
         if (err) {
             res.status(400).json({
                 code: 400,
@@ -39,7 +39,7 @@ exports.createUG = function (req, res) {
     });
 }
 
-exports.getAll = function (req, res) {
+exports.getAll = function(req, res) {
     const id = req.params.ownerId;
     Group.aggregate([
         { $project: { createdAt: { $subtract: ["$createdAt", new Date("1970-01-01")] }, status: 1, ownerId: 1, name: 1 } },
@@ -58,6 +58,13 @@ exports.getAll = function (req, res) {
             });
             return;
         };
+        if (result == null) {
+            res.status(200).json({
+                code: 204,
+                message: "No data!"
+            });
+            return;
+        }
         if (result.length != 0) {
             res.status(200).json({
                 code: 200,
@@ -72,7 +79,7 @@ exports.getAll = function (req, res) {
     });
 }
 
-exports.getDetail = function (req, res) {
+exports.getDetail = function(req, res) {
     const id = req.params.groupId;
     Group.aggregate([
         { $project: { createdAt: { $subtract: ["$createdAt", new Date("1970-01-01")] }, status: 1, name: 1 } },
@@ -99,6 +106,13 @@ exports.getDetail = function (req, res) {
             });
             return;
         };
+        if (result == null) {
+            res.status(200).json({
+                code: 204,
+                message: "No data!"
+            });
+            return;
+        }
         if (result.length != 0) {
             res.status(200).json({
                 code: 200,
@@ -114,7 +128,7 @@ exports.getDetail = function (req, res) {
 }
 
 exports.editGroup = (req, res) => {
-    Group.findOneAndUpdate({ _id: req.params.groupId, status: 1 }, req.body, { new: true }, function (err, result) {
+    Group.findOneAndUpdate({ _id: req.params.groupId, status: 1 }, req.body, { new: true }, function(err, result) {
         if (err) {
             res.status(400).json({
                 code: 400,
@@ -122,6 +136,13 @@ exports.editGroup = (req, res) => {
             });
             return;
         };
+        if (result == null) {
+            res.status(200).json({
+                code: 204,
+                message: "No data!"
+            });
+            return;
+        }
         if (result.length != 0) {
             res.status(200).json({
                 code: 200,
@@ -144,7 +165,7 @@ exports.deleteGroup = (req, res) => {
         if (err) console.log(err);
         console.log(result);
     });
-    Group.findOneAndUpdate({ _id: req.params.groupId, status: 1 }, data, function (err, result) {
+    Group.findOneAndUpdate({ _id: req.params.groupId, status: 1 }, data, function(err, result) {
         if (err) {
             res.status(400).json({
                 code: 400,
@@ -152,6 +173,13 @@ exports.deleteGroup = (req, res) => {
             });
             return;
         };
+        if (result == null) {
+            res.status(200).json({
+                code: 204,
+                message: "No data!"
+            });
+            return;
+        }
         if (result.length != 0) {
             res.status(200).json({
                 code: 200,
@@ -170,9 +198,7 @@ exports.removeUG = (req, res) => {
     let data = {
         status: 0
     }
-    UserGroup.findOneAndUpdate({ groupId: req.params.groupId, patientId: req.params.userId, status: 1 }, data, function (err, result) {
-        console.log(result);
-
+    UserGroup.findOneAndUpdate({ groupId: req.params.groupId, patientId: req.params.userId, status: 1 }, data, function(err, result) {
         if (err) {
             res.status(400).json({
                 code: 400,
@@ -180,6 +206,13 @@ exports.removeUG = (req, res) => {
             });
             return;
         };
+        if (result == null) {
+            res.status(200).json({
+                code: 204,
+                message: "No data!"
+            });
+            return;
+        }
         if (result.length != 0) {
             res.status(200).json({
                 code: 200,
