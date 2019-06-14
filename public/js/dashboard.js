@@ -7,7 +7,25 @@ function listGroup(ownerid) {
         type: "GET",
         success: function(response) {
             var result = response.result;
-            console.log(result);
+            var listGrLocal = [];
+            result.forEach(element => {
+                $.ajax({
+                    url: '/_api/v1/group/detail/' + element._id,
+                    async: true,
+                    type: "GET",
+                    success: function(responseGr) {
+
+                        listGrLocal.push(responseGr.result);
+
+                        localStorage.setItem('res', JSON.stringify(listGrLocal));
+                        
+                        
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        
+                    }
+                });
+            });
             if(result != null){
                 var contentTable = '';
                 for(var i = 0; i < result.length; i++) {

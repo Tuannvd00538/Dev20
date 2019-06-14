@@ -1,7 +1,7 @@
 $(document).ready(() => {
     var socket = io(`https://devhaichuc.herokuapp.com/`);
 
-    var list = JSON.parse(localStorage.getItem('res'))[0];
+    var list = JSON.parse(localStorage.getItem('res'));
 
     var snd = new Audio('../audio/canhbao.mp3');
 
@@ -17,12 +17,17 @@ $(document).ready(() => {
                 snd.play();
 
             }
-            let nameRoom = list.name;
+            let nameRoom = "";
             let nameUser = "";
-            list.list.forEach(element => {
-                if (element.patientId == ownerId) {
-                    nameUser = element.patientName
-                }
+            list.forEach(e => {
+                e.forEach(element => {
+                    element.list.forEach(ee => {
+                        if (ee.patientId == ownerId) {
+                            nameRoom = element.name;
+                            nameUser = ee.patientName
+                        }
+                    });
+                });
             });
             swal("Cảnh Báo!", `Bệnh nhân ${nameUser} tại phòng ${nameRoom} cần được cấp cứu!!!`, "error");
         }

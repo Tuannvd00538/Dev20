@@ -110,7 +110,6 @@ if (groupid != null) {
       url: '/_api/v1/group/detail/' + groupid,
       type: "GET",
       success: function (response) {
-        localStorage.setItem('res', JSON.stringify(response.result));
         var result = response.result;
         if (result != null) {
           var data = result[0].list;
