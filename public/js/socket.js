@@ -4,13 +4,12 @@ $(document).ready(() => {
     var list = JSON.parse(localStorage.getItem('res'));
 
     var snd = new Audio('../audio/canhbao.mp3');
-
+    
     socket.on("PushTempratureToClient", (temperature, ownerId, isWarning) => {
         if (isWarning) {
             if (snd.duration > 0 && !snd.paused) {
 
                 console.log("Playing");
-
 
             } else {
 
@@ -29,7 +28,10 @@ $(document).ready(() => {
                     });
                 });
             });
-            swal("Cảnh Báo!", `Bệnh nhân ${nameUser} tại phòng ${nameRoom} cần được cấp cứu!!!`, "error");
+            swal("Cảnh Báo!", `Bệnh nhân ${nameUser} tại phòng ${nameRoom} cần được cấp cứu!!!`, "error").then(() => {
+                snd.pause();
+                snd.currentTime = 0;
+            });
         }
     });
 });
