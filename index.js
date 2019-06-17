@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://admin:admin123@ds037283.mlab.com:37283/dev20', { useNewUrlParser: true });
+mongoose.connect('mongodb://<username>:<password>@ds037283.mlab.com:37283/dev20', { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
 var app = express();
